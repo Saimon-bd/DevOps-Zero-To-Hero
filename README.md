@@ -1,9 +1,9 @@
   
-## Understanding container networking using `linux network namespaces` and a `virtual switch` to isolate servers
+## Understanding container networking using Linux network namespaces to isolate the server.
 
-#### Only commands will be found [here](https://github.com/faayam/linux-network-namespaces-hands-on/blob/main/ns-project.sh)
+#### commands will be found [here](https://github.com/Saimon-bd/Linux-Namespaces-with-veth-Interconnection/blob/main/commnad-ns.sh)
 
-#### What is Linux Namespaces?
+#### What are Linux Namespaces?
 **_Linux namespace_** is an abstraction over resources in the operating system. We can think of a namespace as a box. Inside this box are these system resources, which ones exactly depend on the box’s (namespace’s) type. There are currently 7 types of namespaces `Cgroup`, `IPC`, `Network`, `Mount`, `PID`, `User`, `UTS`.
 
 #### What is Network Namespaces?
