@@ -23,7 +23,7 @@ Network Namespaces, according to **`man 7 (Seven) network_namespaces`**:
 
 ## Let's start...
 
-**_Step 0:_** To better understand, start by checking the basic network status on the host machine or root namespace. [I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal Linux machines are also okay.]
+**_Step 0:_** To better understand, start by checking the basic network status on the host machine or root namespace. [ `I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal Linux machines are also okay. `]
 ```bash
 # List all the interfaces
 sudo ip link
