@@ -260,7 +260,7 @@ sudo ip netns exec ns1 ping 172.31.13.55
 64 bytes from 172.31.13.55: icmp_seq=2 ttl=64 time=0.036 ms
 # we get the response from host machine eth0
 ```
-**_Step 5.2:_** Now let's see if ns1 can communicate to the internet, we can analysis traffic using tcpdump to see how a packet will travel. Open another terminal for catching traffic using tcpdump.
+**_Step 5.2:_** **Now let's see if ns1 can communicate to the internet, we can analysis traffic using tcpdump to see how a packet will travel. Open another terminal for catching traffic using tcpdump.**
 ```bash
 # terminal-1
 # now trying to ping 8.8.8.8 again
