@@ -25,7 +25,7 @@ Network Namespaces, according to **`man 7 (Seven) network_namespaces`**:
 
 **_Step 0:_** To better understand, start by checking the basic network status on the host machine or root namespace. [I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal Linux machines are also okay.]
 ```bash
-# list all the interfaces
+# List all the interfaces
 sudo ip link
 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
@@ -33,7 +33,7 @@ sudo ip link
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
     link/ether 0a:1b:b1:bc:70:d0 brd ff:ff:ff:ff:ff:ff
 
-# find the routing table
+# Find the routing table
 sudo route -n
 
 Kernel IP routing table
