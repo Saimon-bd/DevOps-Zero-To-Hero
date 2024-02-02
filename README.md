@@ -4,10 +4,10 @@
 #### commands will be found [here](https://github.com/Saimon-bd/Linux-Namespaces-with-veth-Interconnection/blob/main/commnad-ns.sh)
 
 #### What are Linux Namespaces?
-**Linux Namespaces** serves as an abstraction layer over operating system resources. Visualize a namespace as a container that encapsulates specific system resources, with each type of namespace representing a distinct box. Currently, there are **Seven(7)** types of namespaces, namely **`Cgroup`, `IPC`, `Network`, `Mount`, `PID`, `User`, and `UTS`.**
+**Linux Namespaces** serves as an abstraction layer over operating system resources. Visualize a namespace as a container that encapsulates specific system resources, with each type of namespace representing a distinct box. Currently, there are **`7 (Seven)`** types of namespaces, namely **`Cgroup`, `IPC`, `Network`, `Mount`, `PID`, `User`, and `UTS`.**
 
 #### What is Network Namespaces?
-Network namespaces, according to `man 7 network_namespaces`:
+Network namespaces, according to `**man 7 network_namespaces**`:
 
 **_network namespaces provide isolation of the system resources associated with networking: `Network devices,` `IPv4 and IPv6 protocol stacks,` `IP routing tables, Firewall rules,` `the /proc/net directory,` `the /sys/class/net directory,` `various files under /proc/sys/net,` `port numbers (sockets),` and so on._**
 
