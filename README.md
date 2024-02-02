@@ -379,11 +379,11 @@ The escape character is '^]'.
 ```
 
 #### Now the hands on completed; What we achieve:
-- The Host can send traffic to any application inside network namespaces 
-- The Application inside network namespaces can communicate with host applications and other network namespace applications
-- An application inside the network namespaces can connect to the internet
-- An application inside the network namespaces can listen for requests from the outside internet
-- Finally, we understand how Docker or some other container tool does networking under the hood. They automate the whole process for us when we give commands like "Docker run -p 5000:5000 frontend-app"
+- `The Host can send traffic to any application inside network namespaces` 
+- `The Application inside network namespaces can communicate with host applications and other network namespace applications`
+- `An application inside the network namespaces can connect to the internet`
+- `An application inside the network namespaces can listen for requests from the outside internet`
+- `Finally, we understand how Docker or some other container tool does networking under the hood. They automate the whole process for us when we give commands like "Docker run -p 5000:5000 frontend-app"`
 
 #### Resources
 - https://man7.org/linux/man-pages/man7/network_namespaces.7.html
