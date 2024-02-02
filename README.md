@@ -78,7 +78,7 @@ sudo ip netns exec ns2 ip link
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 ````
 
-**_Step 2.1:_** Create a bridge network on the host
+**_Step 2.1:_** **Create a bridge network on the host**
 ```bash
 sudo ip link add br0 type bridge
 # up the created bridge and check whether it is created and in UP/UNKNOWN state
@@ -88,7 +88,7 @@ sudo ip link
 3: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/ether 12:38:75:40:c0:17 brd ff:ff:ff:ff:ff:ff
 ```
-**_Step 2.2:_** Configure IP to the bridge network
+**_Step 2.2:_** **Configure IP to the bridge network**
 ```bash
 sudo ip addr add 192.168.1.1/24 dev br0
 # check whether the ip is configured and also ping to ensure
@@ -107,7 +107,7 @@ ping -c 2 192.168.1.1
 2 packets transmitted, 2 received, 0% packet loss, time 1026ms
 rtt min/avg/max/mdev = 0.020/0.029/0.039/0.009 ms
 ```
-**_Step 3.1:_** Create two veth interface for two network netns, then attach to the bridge and netns
+**_Step 3.1:_** **Create two veth interfaces for two network netns, then attach to the bridge and netns**
 ```bash
 # For ns1
 
@@ -163,7 +163,7 @@ sudo ip netns exec ns2 ip link
     link/ether 3e:1e:48:de:47:07 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 ```
 
-**_Step 3.2:_** Now we will add the IP address to the netns veth interfaces and update the route table to establish communication with bridge network it will also allow communication between two netns via the bridge; 
+**_Step 3.2:_** **Now we will add the IP address to the netns veth interfaces and update the routing table to establish communication with the bridge network it will also allow communication between two netns via the bridge;**
 ```bash
 # For ns1
 sudo ip netns exec ns1 ip addr add 192.168.1.10/24 dev ceth0
@@ -192,7 +192,7 @@ sudo ip netns exec ns2 ping -c 2 192.168.1.1
 rtt min/avg/max/mdev = 0.046/0.050/0.054/0.004 ms
 ```
 
-**_Step 4:_** Verify connectivity between two netns and it should work!
+**_Step 4:_** **Verify connectivity between two netns and it should work!**
 ```bash
 # For ns1: 
 # We can log in to netns environment using the below; 
