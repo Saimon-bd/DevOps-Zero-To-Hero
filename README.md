@@ -4,25 +4,25 @@
 #### commands will be found [here](https://github.com/Saimon-bd/Linux-Namespaces-with-veth-Interconnection/blob/main/commnad-ns.sh)
 
 #### What are Linux Namespaces?
-**Linux Namespaces** serves as an abstraction layer over operating system resources. Visualize a namespace as a container that encapsulates specific system resources, with each type of namespace representing a distinct box. Currently, there are **Seven(7)** types of namespaces, namely **Cgroup, IPC, Network, Mount, PID, User, and UTS.**
+**Linux Namespaces** serves as an abstraction layer over operating system resources. Visualize a namespace as a container that encapsulates specific system resources, with each type of namespace representing a distinct box. Currently, there are **Seven(7)** types of namespaces, namely **`Cgroup`, `IPC`, `Network`, `Moun`t, `PID`, `User`, and `UTS`.**
 
 #### What is Network Namespaces?
 Network namespaces, according to `man 7 network_namespaces`:
 
-**_network namespaces provide isolation of the system resources associated with networking: network devices, IPv4 and IPv6 protocol stacks, IP routing tables, firewall rules, the /proc/net directory, the /sys/class/net directory, various files under /proc/sys/net, port numbers (sockets), and so on._**
+**_network namespaces provide isolation of the system resources associated with networking: Network devices(1), IPv4 and IPv6 protocol stacks, IP routing tables, Firewall rules, the /proc/net directory, the /sys/class/net directory, various files under /proc/sys/net, port numbers (sockets), and so on._**
 
 #### Virtual Interfaces and Bridges:
 **_Virtual interfaces_** provide us with virtualized representations of physical network interfaces; and the **_bridge_** gives us the virtual equivalent of a switch.
 
 #### What are we going to cover?
-- We are going to create two network namespace(like two isolated servers), two veth pair(like two physical ethernet cable) and a bridge (for routing traffic between namespaces).
-- Then we will configure the bridge as the two namespaces can communicate with each other.
+- We are going to create two network namespaces (like two isolated servers), two veth pairs (like two physical ethernet cables), and a bridge (for routing traffic between namespaces).
+- Then we will configure the bridge so the two namespaces can communicate with each other.
 - Then we will connect the bridge to the host and the internet
-- At last we will cofigure for incoming traffic(outside) to the namespace.
+- At last, we will configure for incoming traffic(outside) to the namespace.
 
 ## Let's start...
 
-**_Step 0:_** Check basic network status on host machine/root namespace. Just need to track the current status for better understanding. [I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal linux machine are also okay.]
+**_Step 0:_** Check the basic network status on the host machine/root namespace. Just need to track the current status for better understanding. [I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal Linux machines are also okay.]
 ```bash
 # list all the interfaces
 sudo ip link
