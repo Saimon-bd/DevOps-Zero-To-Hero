@@ -8,7 +8,7 @@
 
 #### What is Network Namespaces?
 
-### Network namespace is a Linux kernel feature that allows us to isolate network environments through virtualization. For example, using network namespaces, you can create separate network interfaces and routing tables that are isolated from the rest of the system and operate independently. Network Namespace is a core component of Docker Networking.
+**Network namespace** `is a Linux kernel feature that allows us to isolate network environments through virtualization. For example, using network namespaces, you can create separate network interfaces and routing tables that are isolated from the rest of the system and operate independently. Network Namespace is a core component of Docker Networking.`
 
 Network Namespaces, according to **`man 7 (Seven) network_namespaces`**:
 
