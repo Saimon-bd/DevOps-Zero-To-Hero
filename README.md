@@ -45,7 +45,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 172.31.0.0      0.0.0.0         255.255.240.0   U     0      0        0 eth0
 172.31.0.1      0.0.0.0         255.255.255.255 UH    100    0        0 eth0
 ```
-**_Step 1.1:_** Create two network namespace
+**_Step 1.1:_** **Create two network namespace**
 ```bash
 # Add two network namespaces using "ip netns" command
 sudo ip netns add ns1
@@ -63,7 +63,7 @@ sudo ls /var/run/netns/
 
 ns1 ns2
 ```
-**_Step 1.2:_** By default, network interfaces of created netns are down, even loop interfaces. make them up.
+**_Step 1.2:_** **By default, network interfaces of created netns are down, even loop interfaces. make them up.**
 ```bash
 sudo ip netns exec ns1 ip link set lo up
 sudo ip netns exec ns1 ip link
