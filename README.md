@@ -19,7 +19,7 @@ Network Namespaces, according to **`man 7 (Seven) network_namespaces`**:
  the virtual equivalent of a `Switch`.
 
 #### What are we going to cover?
-- `We are going to create `**two Network Namespaces**` (like two isolated servers), `**two veth pairs**` (like two physical ethernet cables), and `**a bridge**` (for routing traffic between namespaces).`
+- `We are going to create `**2(Two) Network Namespaces**` (like two isolated servers), `**2(Two) veth pairs**` (like two physical ethernet cables), and `**a bridge**` (for routing traffic between namespaces).`
 - `Then we will configure the bridge so the two namespaces can communicate with each other.`
 - `Then we will connect the bridge to the host and the internet`
 - `At last, we will configure for incoming traffic(outside) to the namespace.`
