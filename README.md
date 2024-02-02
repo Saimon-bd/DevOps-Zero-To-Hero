@@ -9,7 +9,7 @@
 #### What is Network Namespaces?
 Network namespaces, according to `man 7 network_namespaces`:
 
-**_network namespaces provide isolation of the system resources associated with networking: Network devices(1), IPv4 and IPv6 protocol stacks, IP routing tables, Firewall rules, the /proc/net directory, the /sys/class/net directory, various files under /proc/sys/net, port numbers (sockets), and so on._**
+**_network namespaces provide isolation of the system resources associated with networking: `Network devices,` `IPv4 and IPv6 protocol stacks,` `IP routing tables, Firewall rules,` `the /proc/net directory,` `the /sys/class/net directory,` `various files under /proc/sys/net,` `port numbers (sockets),` and so on._**
 
 #### Virtual Interfaces and Bridges:
 **_Virtual interfaces_** provide us with virtualized representations of physical network interfaces; and the **_bridge_** gives us the virtual equivalent of a switch.
