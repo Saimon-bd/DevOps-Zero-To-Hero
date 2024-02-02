@@ -23,7 +23,7 @@ Network Namespaces, according to **`man 7 (Seven) network_namespaces`**:
 
 ## Let's start...
 
-**_Step 0:_** Check the basic network status on the host machine/root namespace. Just need to track the current status for better understanding. [I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal Linux machines are also okay.]
+**_Step 0:_** To better understand, start by checking the basic network status on the host machine or root namespace. [I launch an ec2 instance(ubuntu) from AWS to simulate this hands-on. VM or even Normal Linux machines are also okay.]
 ```bash
 # list all the interfaces
 sudo ip link
@@ -44,11 +44,11 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 ```
 **_Step 1.1:_** Create two network namespace
 ```bash
-# add two two network namespaces using "ip netns" command
+# Add two network namespaces using "ip netns" command
 sudo ip netns add ns1
 sudo ip netns add ns2
 
-# list the created network namespaces
+# List the created network namespaces
 sudo ip netns list
 
 ns1
@@ -160,7 +160,7 @@ sudo ip netns exec ns2 ip link
     link/ether 3e:1e:48:de:47:07 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 ```
 
-**_Step 3.2:_** Now we will we add ip address to the netns veth interfaces and update route table to establish communication with bridge network and it will also allow communication between two netns via bridge; 
+**_Step 3.2:_** Now we will add the IP address to the netns veth interfaces and update the route table to establish communication with bridge network it will also allow communication between two netns via the bridge; 
 ```bash
 # For ns1
 sudo ip netns exec ns1 ip addr add 192.168.1.10/24 dev ceth0
@@ -192,8 +192,8 @@ rtt min/avg/max/mdev = 0.046/0.050/0.054/0.004 ms
 **_Step 4:_** Verify connectivity between two netns and it should work!
 ```bash
 # For ns1: 
-# we can log in to netns environment using below; 
-# it will be totally isolated from any other network
+# We can log in to netns environment using the below; 
+# It will be isolated from any other network
 sudo nsenter --net=/var/run/netns/ns1
 # ping to the ns2 netns to verify the connectivity
 ping -c 2 192.168.1.11
@@ -214,11 +214,11 @@ rtt min/avg/max/mdev = 0.041/0.044/0.048/0.003 ms
 # exit from the ns2
 exit
 ```
-#### Connectivity between two network namespaces via bridge is completed.
+#### Connectivity between two network namespaces via the bridge is completed.
 
 ![Project Diagram](https://github.com/faayam/linux-network-namespaces-hands-on/blob/main/namespace-setup.png)
 
-_the diagrom is taken from ops.tips blog_
+_the diagram is taken from ops. tips blog_
 
 **_Step 5.1:_** Now it's time to connect to the internet. As we saw routing table from `ns1` doesn’t have a default gateway, it can’t reach any other machine from outside the `192.168.1.0/24` range.
 ```bash
@@ -230,7 +230,7 @@ Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 ceth0
 # As we can see, no route is defined to carry other traffic than 192.168.1.0/24
-# we can fix this by using adding default route 
+# We can fix this by adding default route 
 sudo ip netns exec ns1 ip route add default via 192.168.1.1
 sudo ip netns exec ns1 route -n
 Kernel IP routing table
@@ -247,7 +247,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 ceth1
 192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 ceth1
 
-# now first ping the host machine eth0
+# Now first ping the host machine eth0
 ip addr | grep eth0
 
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc fq_codel state UP group default qlen 1000
@@ -279,7 +279,7 @@ listening on br0, link-type EN10MB (Ethernet), capture size 262144 bytes
 02:17:30.807072 IP ip-192-168-1-10.ap-south-1.compute.internal > dns.google: ICMP echo request, id 17506, seq 1, length 64
 02:17:31.829317 IP ip-192-168-1-10.ap-south-1.compute.internal > dns.google: ICMP echo request, id 17506, seq 2, length 64
 
-# we can see the traffic at br0 but we don't get response from eth0.
+# we can see the traffic at br0 but we don't get a response from eth0.
 # it's because of IP forwarding issue
 sudo cat /proc/sys/net/ipv4/ip_forward
 0
@@ -309,13 +309,13 @@ sudo iptables \
         -s 192.168.1.0/24 ! -o br0 \
         -j MASQUERADE
 # -t specifies the table to which the commands
-# should be directed to. By default it's `filter`.
+# should be directed to. By default, it's `filter`.
 # -A specifies that we're appending a rule to the
 # chain then we tell the name after it;
 # -s specifies a source address (with a mask in this case).
 # -j specifies the target to jump to (what action to take).
 
-# now we're getting response from google dns
+# Now we're getting a response from Google DNS
 sudo ip netns exec ns1 ping -c 2 8.8.8.8
 
 --- 8.8.8.8 ping statistics ---
@@ -323,18 +323,18 @@ sudo ip netns exec ns1 ping -c 2 8.8.8.8
 rtt min/avg/max/mdev = 1.625/1.662/1.700/0.037 ms
 ```
 
-**_Step: 6_** Now let's open a service in one of the namespaces and try to get response from outside
+**_Step: 6_** Now let's open a service in one of the namespaces and try to get a response from outside
 ```bash
 sudo nsenter --net=/var/run/netns/netns1
 python3 -m http.server --bind 192.168.1.10 3000
 ```
-As I have a ec2 instance from AWS, it have an attached public IP. I will try to reach that IP with specific port from outside. 
+As I have an ec2 instance from AWS, it has an attached public IP. I will try to reach that IP with a specific port from outside. 
 ```bash
 telnet 65.2.35.192 5000
 Trying 65.2.35.192...
 telnet: Unable to connect to remote host: Connection refused
 ```
-As we can see we can't reach the destination. Because we didn'i tell the Host machine where to put the incoming traffic. We have to NAT again, this time we will define the destination.
+As we can see we can't reach the destination. Because we didn't tell the Host machine where to put the incoming traffic. We have to NAT again, this time we will define the destination.
 ```bash
 
 sudo iptables \
@@ -344,25 +344,25 @@ sudo iptables \
         -p tcp -m tcp --dport 5000 \
         -j DNAT --to-destination 192.168.1.10:5000
 # -p specifies a port type and --dport specifies the destination port
-# -j specifies the target DNAT to jump to destination IP with port.
+# -j specifies the target DNAT to jump to the destination IP with port.
 
 
-# from my laptop
-# now I can connect the destination with port.
-# We successfully recieved traffic from internet inside container network
+# From my laptop
+# Now I can connect the destination with the port.
+# We successfully received traffic from the internet inside the container network
 
 telnet 65.2.35.192 5000
 Trying 65.2.35.192...
 Connected to 65.2.35.192.
-Escape character is '^]'.
+The escape character is '^]'.
 ```
 
 #### Now the hands on completed; What we achieve:
 - the host can send traffic to any application inside network namespaces 
-- the application inside network namespaces can comunicate with host applications and another network namespaces applications
+- the application inside network namespaces can communicate with host applications and other network namespaces applications
 - an application inside the network namespaces can connect to the internet
 - an application inside the network namespaces can listen for request from the outside internet
-- Finally we understand how Docker or some other container tool done networking under the hood. They automate the whole process for us when we give command like "Docker run -p 5000:5000 frontend-app"
+- Finally, we understand how Docker or some other container tool done networking under the hood. They automate the whole process for us when we give commands like "Docker run -p 5000:5000 frontend-app"
 
 #### Resources
 - https://man7.org/linux/man-pages/man7/network_namespaces.7.html
