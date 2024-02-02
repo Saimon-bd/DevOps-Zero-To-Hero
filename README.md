@@ -219,11 +219,10 @@ exit
 ```
 #### Connectivity between two network namespaces via the bridge is completed.
 
-![Project Diagram](https://github.com/faayam/linux-network-namespaces-hands-on/blob/main/namespace-setup.png)
+![Project Diagram](https://github.com/Saimon-bd/Linux-Namespaces-with-veth-Interconnection/blob/main/namespaces.png)
 
-_the diagram is taken from ops. tips blog_
 
-**_Step 5.1:_** Now it's time to connect to the internet. As we saw routing table from `ns1` doesn’t have a default gateway, it can’t reach any other machine from outside the `192.168.1.0/24` range.
+**_Step 5.1:_** **Now it's time to connect to the internet. As we saw routing table from `ns1` doesn’t have a default gateway, it can’t reach any other machine from outside the `192.168.1.0/24` range.**
 ```bash
 sudo ip netns exec ns1 ping -c 2 8.8.8.8
 ping: connect: Network is unreachable
