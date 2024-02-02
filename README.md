@@ -81,7 +81,7 @@ sudo ip netns exec ns2 ip link
 **_Step 2.1:_** **Create a bridge network on the host**
 ```bash
 sudo ip link add br0 type bridge
-# up the created bridge and check whether it is created and in UP/UNKNOWN state
+# Up the created bridge and check whether it is created and in UP/UNKNOWN state
 sudo ip link set br0 up
 sudo ip link
 
@@ -111,17 +111,22 @@ rtt min/avg/max/mdev = 0.020/0.029/0.039/0.009 ms
 ```bash
 # For ns1
 
-# creating a veth pair which have two ends identical veth0 and ceth0
+# Creating a veth pair which have two ends identical veth0 and ceth0
 sudo ip link add veth0 type veth peer name ceth0
-# connect veth0 end to the bridge br0
+
+# Connect veth0 end to the bridge br0
 sudo ip link set veth0 master br0
-# up the veth0 
-sudo ip link set veth0 up 
-# connect ceth0 end to the netns ns1
+
+# Up the veth0 
+sudo ip link set veth0 up
+
+# Connect ceth0 end to the netns ns1
 sudo ip link set ceth0 netns ns1
-# up the ceth0 using 'exec' to run command inside netns
+
+# Up the ceth0 using 'exec' to run command inside netns
 sudo ip netns exec ns1 ip link set ceth0 up
-# check the link status 
+
+# Check the link status 
 sudo ip link
 
 3: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
@@ -171,7 +176,8 @@ sudo ip netns exec ns1 ping -c 2 192.168.1.10
 sudo ip netns exec ns1 ip route
  
 192.168.1.0/24 dev ceth0 proto kernel scope link src 192.168.1.10
-# check if you can reach bridge interface
+
+# Check if you can reach the bridge interface
 sudo ip netns exec ns1 ping -c 2 192.168.1.1
 
 --- 192.168.1.1 ping statistics ---
@@ -184,7 +190,8 @@ sudo ip netns exec ns2 ping -c 2 192.168.1.11
 sudo ip netns exec ns2 ip route 
 
 192.168.1.0/24 dev ceth1 proto kernel scope link src 192.168.1.11
-# check if you can reach bridge interface
+
+# Check if you can reach the bridge interface
 sudo ip netns exec ns2 ping -c 2 192.168.1.1
 
 --- 192.168.1.1 ping statistics ---
@@ -195,26 +202,30 @@ rtt min/avg/max/mdev = 0.046/0.050/0.054/0.004 ms
 **_Step 4:_** **Verify connectivity between two netns and it should work!**
 ```bash
 # For ns1: 
-# We can log in to netns environment using the below; 
-# It will be isolated from any other network
+# We can log in to netns environment using the below; It will be isolated from any other network
 sudo nsenter --net=/var/run/netns/ns1
+
 # ping to the ns2 netns to verify the connectivity
 ping -c 2 192.168.1.11
 
 --- 192.168.1.11 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1019ms
 rtt min/avg/max/mdev = 0.033/0.042/0.051/0.009 ms
-# exit from the ns1
+
+# Exit from the ns1
 exit
+
 # For ns2
 sudo nsenter --net=/var/run/netns/ns2
-# ping to the ns1 netns to verify the connectivity
+
+# Ping to the ns1 netns to verify the connectivity
 ping -c 2 192.168.1.10
 
 --- 192.168.1.10 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1022ms
 rtt min/avg/max/mdev = 0.041/0.044/0.048/0.003 ms
-# exit from the ns2
+
+# Exit from the ns2
 exit
 ```
 #### Connectivity between two network namespaces via the bridge is completed.
@@ -226,15 +237,19 @@ exit
 ```bash
 sudo ip netns exec ns1 ping -c 2 8.8.8.8
 ping: connect: Network is unreachable
-# check the route inside ns1
+
+# Check the route inside ns1
 sudo ip netns exec ns1 route -n
+
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 ceth0
 # As we can see, no route is defined to carry other traffic than 192.168.1.0/24
-# We can fix this by adding default route 
+
+# We can fix this by adding a default route 
 sudo ip netns exec ns1 ip route add default via 192.168.1.1
 sudo ip netns exec ns1 route -n
+
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 ceth0
@@ -254,10 +269,12 @@ ip addr | grep eth0
 
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc fq_codel state UP group default qlen 1000
     inet 172.31.13.55/20 brd 172.31.15.255 scope global dynamic eth0
-# ping from ns1 to host ip
+
+# Ping from ns1 to host ip
 sudo ip netns exec ns1 ping 172.31.13.55
 64 bytes from 172.31.13.55: icmp_seq=1 ttl=64 time=0.037 ms
 64 bytes from 172.31.13.55: icmp_seq=2 ttl=64 time=0.036 ms
+
 # we get the response from host machine eth0
 ```
 **_Step 5.2:_** **Now let's see if ns1 can communicate to the internet, we can analysis traffic using tcpdump to see how a packet will travel. Open another terminal for catching traffic using tcpdump.**
@@ -281,12 +298,12 @@ listening on br0, link-type EN10MB (Ethernet), capture size 262144 bytes
 02:17:30.807072 IP ip-192-168-1-10.ap-south-1.compute.internal > dns.google: ICMP echo request, id 17506, seq 1, length 64
 02:17:31.829317 IP ip-192-168-1-10.ap-south-1.compute.internal > dns.google: ICMP echo request, id 17506, seq 2, length 64
 
-# we can see the traffic at br0 but we don't get a response from eth0.
-# it's because of IP forwarding issue
+# We can see the traffic at br0 but we don't get a response from eth0.
+# It's because of an IP forwarding issue
 sudo cat /proc/sys/net/ipv4/ip_forward
 0
 
-# enabling ip forwarding by change value 0 to 1
+# enabling ip forwarding by changing value 0 to 1
 sudo sysctl -w net.ipv4.ip_forward=1
 sudo cat /proc/sys/net/ipv4/ip_forward
 1
@@ -295,15 +312,17 @@ sudo cat /proc/sys/net/ipv4/ip_forward
 sudo tcpdump -i eth0 icmp
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+
 02:30:12.603895 IP ip-192-168-1-10.ap-south-1.compute.internal > dns.google: ICMP echo request, id 18103, seq 1, length 64
 02:30:13.621367 IP ip-192-168-1-10.ap-south-1.compute.internal > dns.google: ICMP echo request, id 18103, seq 2, length 64
-# as we can see now we are getting response eth0
+
+# As we can see how we are getting responses eth0
 # but ping 8.8.8.8 still not working
 # Although the network is now reachable, there’s no way that 
-# we can have responses back - cause packets from external networks 
+# We can have responses back - cause packets from external networks 
 # can’t be sent directly to our `192.168.1.0/24` network.
 ```
-**_Step 5.3:_** To get around that, we can make use of NAT (network address translation) by placing an `iptables` rule in the `POSTROUTING` chain of the `nat` table.
+**_Step 5.3:_** **To get around that, we can make use of NAT (network address translation) by placing an `iptables` rule in the `POSTROUTING` chain of the `nat` table.**
 ```bash
 sudo iptables \
         -t nat \
@@ -325,18 +344,18 @@ sudo ip netns exec ns1 ping -c 2 8.8.8.8
 rtt min/avg/max/mdev = 1.625/1.662/1.700/0.037 ms
 ```
 
-**_Step: 6_** Now let's open a service in one of the namespaces and try to get a response from outside
+**_Step: 6_** **Now let's open a service in one of the namespaces and try to get a response from outside**
 ```bash
 sudo nsenter --net=/var/run/netns/netns1
 python3 -m http.server --bind 192.168.1.10 3000
 ```
-As I have an ec2 instance from AWS, it has an attached public IP. I will try to reach that IP with a specific port from outside. 
+`As I have an ec2 instance from AWS, it has an attached public IP. I will try to reach that IP with a specific port from outside.` 
 ```bash
 telnet 65.2.35.192 5000
 Trying 65.2.35.192...
 telnet: Unable to connect to remote host: Connection refused
 ```
-As we can see we can't reach the destination. Because we didn't tell the Host machine where to put the incoming traffic. We have to NAT again, this time we will define the destination.
+`As we can see we can't reach the destination. Because we didn't tell the Host machine where to put the incoming traffic. We have to NAT again, this time we will define the destination.`
 ```bash
 
 sudo iptables \
