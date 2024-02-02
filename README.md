@@ -7,12 +7,13 @@
 **Linux Namespaces** serves as an abstraction layer over operating system resources. Visualize a namespace as a container that encapsulates specific system resources, with each type of namespace representing a distinct box. Currently, there are **`7 (Seven)`** types of namespaces, namely **`Cgroup`, `IPC`, `Network`, `Mount`, `PID`, `User`, and `UTS`.**
 
 #### What is Network Namespaces?
-Network namespaces, according to **`man 7 network_namespaces`**:
+Network Namespaces, according to **`man 7 (Seven) network_namespaces`**:
 
 **_network namespaces provide isolation of the system resources associated with networking: `Network devices,` `IPv4 and IPv6 protocol stacks,` `IP routing tables,` `Firewall rules,` `the /proc/net directory,` `the /sys/class/net directory,` `various files under /proc/sys/net,` `port numbers (sockets),` and so on._**
 
 #### Virtual Interfaces and Bridges:
-**_`Virtual interfaces`_** provide us with virtualized representations of physical `Network Interfaces`; and the **_`Bridge`_** gives us the virtual equivalent of a `Switch`.
+**_`Virtual interfaces`_** provide us with virtualized representations of physical `Network Interfaces`; and the **_`Bridge`_** gives us 
+ the virtual equivalent of a `Switch`.
 
 #### What are we going to cover?
 - We are going to create two network namespaces (like two isolated servers), two veth pairs (like two physical ethernet cables), and a bridge (for routing traffic between namespaces).
