@@ -1,5 +1,5 @@
   
-## Understanding container networking using Linux network namespaces to isolate the server.
+## Understanding Container Networking using Linux Network Namespaces to isolate the server.
 
 #### Commands will be found [here](https://github.com/Saimon-bd/Linux-Namespaces-with-veth-Interconnection/blob/main/commnad-ns.sh)
 
