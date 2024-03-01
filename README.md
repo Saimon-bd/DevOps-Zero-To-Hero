@@ -48,31 +48,31 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 **_Step 1.1:_** **Create two network namespace**
 ```bash
 # Add two network namespaces using "ip netns" command
-sudo ip netns add ns1
-sudo ip netns add ns2
+sudo ip netns add red
+sudo ip netns add green
 
 # List the created network namespaces
 sudo ip netns list
 
-ns1
-ns2
+red
+green
 
 # By convention, network namespace handles created by
 # iproute2 live under `/var/run/netns`
 sudo ls /var/run/netns/
 
-ns1 ns2
+red green
 ```
 **_Step 1.2:_** **By default, network interfaces of created netns are down, even loop interfaces. make them up.**
 ```bash
-sudo ip netns exec ns1 ip link set lo up
-sudo ip netns exec ns1 ip link
+sudo ip netns exec red ip link set lo up
+sudo ip netns exec red ip link
 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 
-sudo ip netns exec ns2 ip link set lo up
-sudo ip netns exec ns2 ip link
+sudo ip netns exec green ip link set lo up
+sudo ip netns exec green ip link
 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -121,10 +121,10 @@ sudo ip link set veth0 master br0
 sudo ip link set veth0 up
 
 # Connect ceth0 end to the netns ns1
-sudo ip link set ceth0 netns ns1
+sudo ip link set ceth0 netns red
 
 # Up the ceth0 using 'exec' to run command inside netns
-sudo ip netns exec ns1 ip link set ceth0 up
+sudo ip netns exec red ip link set ceth0 up
 
 # Check the link status 
 sudo ip link
@@ -135,7 +135,7 @@ sudo ip link
     link/ether 9a:af:0d:89:8b:81 brd ff:ff:ff:ff:ff:ff link-netns ns1
 
 # check the link status inside ns1
-sudo ip netns exec ns1 ip link
+sudo ip netns exec red ip link
 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -143,13 +143,13 @@ sudo ip netns exec ns1 ip link
     link/ether 3e:66:e5:b6:07:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
 
 
-# For ns2; do the same as ns1
+# For green; do the same as red
 
 sudo ip link add veth1 type veth peer name ceth1
 sudo ip link set veth1 master br0
 sudo ip link set veth1 up
-sudo ip link set ceth1 netns ns2
-sudo ip netns exec ns2 ip link set ceth1 up
+sudo ip link set ceth1 netns green
+sudo ip netns exec green ip link set ceth1 up
 
 sudo ip link 
 
@@ -160,7 +160,7 @@ sudo ip link
 7: veth1@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br0 state UP mode DEFAULT group default qlen 1000
     link/ether 1a:f5:b2:8e:ca:a5 brd ff:ff:ff:ff:ff:ff link-netns ns2
     
-sudo ip netns exec ns2 ip link
+sudo ip netns exec green ip link
 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -170,29 +170,29 @@ sudo ip netns exec ns2 ip link
 
 **_Step 3.2:_** **Now we will add the IP address to the netns veth interfaces and update the routing table to establish communication with the bridge network it will also allow communication between two netns via the bridge;**
 ```bash
-# For ns1
-sudo ip netns exec ns1 ip addr add 192.168.1.10/24 dev ceth0
-sudo ip netns exec ns1 ping -c 2 192.168.1.10
-sudo ip netns exec ns1 ip route
+# For red
+sudo ip netns exec red ip addr add 192.168.1.10/24 dev ceth0
+sudo ip netns exec red ping -c 2 192.168.1.10
+sudo ip netns exec red ip route
  
 192.168.1.0/24 dev ceth0 proto kernel scope link src 192.168.1.10
 
 # Check if you can reach the bridge interface
-sudo ip netns exec ns1 ping -c 2 192.168.1.1
+sudo ip netns exec red ping -c 2 192.168.1.1
 
 --- 192.168.1.1 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1020ms
 rtt min/avg/max/mdev = 0.046/0.050/0.054/0.004 ms
 
 # For ns2
-sudo ip netns exec ns2 ip addr add 192.168.1.11/24 dev ceth1
-sudo ip netns exec ns2 ping -c 2 192.168.1.11
-sudo ip netns exec ns2 ip route 
+sudo ip netns exec green ip addr add 192.168.1.11/24 dev ceth1
+sudo ip netns exec green ping -c 2 192.168.1.11
+sudo ip netns exec green ip route 
 
 192.168.1.0/24 dev ceth1 proto kernel scope link src 192.168.1.11
 
 # Check if you can reach the bridge interface
-sudo ip netns exec ns2 ping -c 2 192.168.1.1
+sudo ip netns exec green ping -c 2 192.168.1.1
 
 --- 192.168.1.1 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1020ms
@@ -201,31 +201,31 @@ rtt min/avg/max/mdev = 0.046/0.050/0.054/0.004 ms
 
 **_Step 4:_** **Verify connectivity between two netns and it should work!**
 ```bash
-# For ns1: 
+# For red: 
 # We can log in to netns environment using the below; It will be isolated from any other network
-sudo nsenter --net=/var/run/netns/ns1
+sudo nsenter --net=/var/run/netns/red
 
-# ping to the ns2 netns to verify the connectivity
+# ping to the green netns to verify the connectivity
 ping -c 2 192.168.1.11
 
 --- 192.168.1.11 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1019ms
 rtt min/avg/max/mdev = 0.033/0.042/0.051/0.009 ms
 
-# Exit from the ns1
+# Exit from the red
 exit
 
-# For ns2
-sudo nsenter --net=/var/run/netns/ns2
+# For green
+sudo nsenter --net=/var/run/netns/green
 
-# Ping to the ns1 netns to verify the connectivity
+# Ping to the red netns to verify the connectivity
 ping -c 2 192.168.1.10
 
 --- 192.168.1.10 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1022ms
 rtt min/avg/max/mdev = 0.041/0.044/0.048/0.003 ms
 
-# Exit from the ns2
+# Exit from the green
 exit
 ```
 #### Connectivity between two network namespaces via the bridge is completed.
@@ -235,11 +235,11 @@ exit
 
 **_Step 5.1:_** **Now it's time to connect to the internet. As we saw routing table from `ns1` doesn’t have a default gateway, it can’t reach any other machine from outside the `192.168.1.0/24` range.**
 ```bash
-sudo ip netns exec ns1 ping -c 2 8.8.8.8
+sudo ip netns exec red ping -c 2 8.8.8.8
 ping: connect: Network is unreachable
 
-# Check the route inside ns1
-sudo ip netns exec ns1 route -n
+# Check the route inside red
+sudo ip netns exec red route -n
 
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
@@ -247,17 +247,17 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 # As we can see, no route is defined to carry other traffic than 192.168.1.0/24
 
 # We can fix this by adding a default route 
-sudo ip netns exec ns1 ip route add default via 192.168.1.1
-sudo ip netns exec ns1 route -n
+sudo ip netns exec red ip route add default via 192.168.1.1
+sudo ip netns exec red route -n
 
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 ceth0
 192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 ceth0
 
-# Do the same for ns2
-sudo ip netns exec ns2 ip route add default via 192.168.1.1
-sudo ip netns exec ns2 route -n
+# Do the same for green
+sudo ip netns exec green ip route add default via 192.168.1.1
+sudo ip netns exec green route -n
 
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
@@ -271,7 +271,7 @@ ip addr | grep eth0
     inet 172.31.13.55/20 brd 172.31.15.255 scope global dynamic eth0
 
 # Ping from ns1 to host ip
-sudo ip netns exec ns1 ping 172.31.13.55
+sudo ip netns exec red ping 172.31.13.55
 64 bytes from 172.31.13.55: icmp_seq=1 ttl=64 time=0.037 ms
 64 bytes from 172.31.13.55: icmp_seq=2 ttl=64 time=0.036 ms
 
@@ -281,7 +281,7 @@ sudo ip netns exec ns1 ping 172.31.13.55
 ```bash
 # terminal-1
 # now trying to ping 8.8.8.8 again
-sudo ip netns exec ns1 ping 8.8.8.8
+sudo ip netns exec red ping 8.8.8.8
 
 # still unreachable
 # terminal 2
@@ -337,7 +337,7 @@ sudo iptables \
 # -j specifies the target to jump to (what action to take).
 
 # Now we're getting a response from Google DNS
-sudo ip netns exec ns1 ping -c 2 8.8.8.8
+sudo ip netns exec red ping -c 2 8.8.8.8
 
 --- 8.8.8.8 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1002ms
@@ -346,7 +346,7 @@ rtt min/avg/max/mdev = 1.625/1.662/1.700/0.037 ms
 
 **_Step: 6_** **Now let's open a service in one of the namespaces and try to get a response from outside**
 ```bash
-sudo nsenter --net=/var/run/netns/netns1
+sudo nsenter --net=/var/run/netns/netred
 python3 -m http.server --bind 192.168.1.10 3000
 ```
 `As I have an ec2 instance from AWS, it has an attached public IP. I will try to reach that IP with a specific port from outside.` 
