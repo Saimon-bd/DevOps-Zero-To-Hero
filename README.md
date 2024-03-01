@@ -109,7 +109,7 @@ rtt min/avg/max/mdev = 0.020/0.029/0.039/0.009 ms
 ```
 **_Step 3.1:_** **Create two veth interfaces for two network netns, then attach to the bridge and netns**
 ```bash
-# For ns1
+# For red
 
 # Creating a veth pair which have two ends identical veth0 and ceth0
 sudo ip link add veth0 type veth peer name ceth0
@@ -120,7 +120,7 @@ sudo ip link set veth0 master br0
 # Up the veth0 
 sudo ip link set veth0 up
 
-# Connect ceth0 end to the netns ns1
+# Connect ceth0 end to the netns red
 sudo ip link set ceth0 netns red
 
 # Up the ceth0 using 'exec' to run command inside netns
@@ -134,7 +134,7 @@ sudo ip link
 5: veth0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br0 state UP mode DEFAULT group default qlen 1000
     link/ether 9a:af:0d:89:8b:81 brd ff:ff:ff:ff:ff:ff link-netns ns1
 
-# check the link status inside ns1
+# check the link status inside red
 sudo ip netns exec red ip link
 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
@@ -184,7 +184,7 @@ sudo ip netns exec red ping -c 2 192.168.1.1
 2 packets transmitted, 2 received, 0% packet loss, time 1020ms
 rtt min/avg/max/mdev = 0.046/0.050/0.054/0.004 ms
 
-# For ns2
+# For green
 sudo ip netns exec green ip addr add 192.168.1.11/24 dev ceth1
 sudo ip netns exec green ping -c 2 192.168.1.11
 sudo ip netns exec green ip route 
